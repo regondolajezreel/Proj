@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Login</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+
+   <div class="login-container">
+      <h1>LearnSync</h1>
+
+            {% with messages = get_flashed_messages() %}
+         {% if messages %}
+            <div class="flash-messages">
+               {% for message in messages %}
+                  <div class="flash-message">{{ message }}</div>
+               {% endfor %}
+            </div>
+         {% endif %}
+      {% endwith %}
+
+            <div class="toggle">
+         <button onclick="window.location.href='/signup'">Sign Up</button>
+      </div>
+
+            <div class="user-type-selection">
+         <label>I am a:</label>
+         <div class="radio-group">
+            <input type="radio" id="student" name="userType" value="student" checked>
+            <label for="student">Student</label>
+            <input type="radio" id="professor" name="userType" value="professor">
+            <label for="professor">Professor</label>
+         </div>
+      </div>
+            <form method="POST" action="/login">
+                  <input type="hidden" name="userType" id="userTypeInput" value="student">
+         
+         <div class="input-group">
+            <span class="icon">@</span>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+         </div>
+
+         <div class="input-group">
+            <span class="icon">🔒</span>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+         </div>
+
+         <div class="options">
+            <label><input type="checkbox" name="remember"> Remember me</label>
+                        <a href="{{ url_for('forgot_password') }}" id="forgotLink">Forgot Password?</a>
+         </div>
+
+         <button class="login-btn" type="submit">Log In</button>
+      </form>
+
+   </div>
+
+   <script>
+      document.addEventListener('DOMContentLoaded', function() {
+         const studentRadio = document.getElementById('student');
+         const professorRadio = document.getElementById('professor');
+         const userTypeInput = document.getElementById('userTypeInput');
+
+         function updateUserType() {
+            if (studentRadio.checked) {
+               userTypeInput.value = 'student';
+            } else {
+               userTypeInput.value = 'professor';
+            }
+         }
+
+         studentRadio.addEventListener('change', updateUserType);
+         professorRadio.addEventListener('change', updateUserType);
+      });
+   </script>
+
+</body>
+</html>

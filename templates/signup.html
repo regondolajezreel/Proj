@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="/static/css/login.css">
+  <style>
+    .user-type-selection {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .user-type-selection label {
+      display: block;
+      margin-bottom: 10px;
+      color: #666;
+    }
+    
+    .radio-group {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+    
+    #studentFields, #professorFields {
+      margin-bottom: 10px;
+    }
+    
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1em;
+      background: white;
+    }
+
+    .flash-messages {
+      margin-bottom: 15px;
+    }
+
+    .flash-message {
+      background: #ffebee;
+      color: #c62828;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h1>LearnSync</h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Toggle buttons -->
+    <div class="toggle">
+      <button onclick="window.location.href='/login'">Login</button>
+      <button class="active">Sign Up</button>
+    </div>
+
+    <!-- User Type Selection -->
+    <div class="user-type-selection">
+      <label>I am a:</label>
+      <div class="radio-group">
+        <label>
+          <input type="radio" id="student" name="userType" value="student" checked>
+          Student
+        </label>
+        <label>
+          <input type="radio" id="professor" name="userType" value="professor">
+          Professor
+        </label>
+      </div>
+    </div>
+
+    <!-- Signup form -->
+    <form method="POST" action="/signup">
+      <input type="hidden" name="userType" id="userTypeInput" value="student">
+      
+      <div class="input-group">
+        <span class="icon">👤</span>
+        <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+      </div>
+
+      <div class="input-group">
+        <span class="icon">👤</span>
+        <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+      </div>
+
+      <div class="input-group">
+        <span class="icon">@</span>
+        <input type="email" id="email" name="email" placeholder="Email" required>
+      </div>
+
+      <!-- Student-specific fields -->
+      <div id="studentFields">
+        <div class="input-group">
+          <span class="icon">🎓</span>
+          <input type="text" id="studentId" name="studentId" placeholder="Student ID" required>
+        </div>
+
+        <div class="input-group">
+          <span class="icon">📚</span>
+          <input type="text" id="course" name="course" placeholder="Course/Program" required>
+        </div>
+
+        <div class="input-group">
+          <span class="icon">📅</span>
+          <select id="yearLevel" name="yearLevel" required>
+            <option value="">Select Year Level</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+            <option value="5th Year">5th Year</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Professor-specific fields -->
+      <div id="professorFields" style="display: none;">
+        <div class="input-group">
+          <span class="icon">👨‍🏫</span>
+          <input type="text" id="professorId" name="professorId" placeholder="Professor ID" required>
+        </div>
+
+        <div class="input-group">
+          <span class="icon">🏫</span>
+          <input type="text" id="department" name="department" placeholder="Department" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <span class="icon">🔒</span>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+      </div>
+
+      <div class="input-group">
+        <span class="icon">🔒</span>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+      </div>
+
+      <div class="options">
+        <label><input type="checkbox" name="policy" required> I agree to the Terms & Conditions</label>
+      </div>
+
+      <button class="login-btn" type="submit">Sign Up</button>
+    </form>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const studentRadio = document.getElementById('student');
+      const professorRadio = document.getElementById('professor');
+      const studentFields = document.getElementById('studentFields');
+      const professorFields = document.getElementById('professorFields');
+      const userTypeInput = document.getElementById('userTypeInput');
+
+      function toggleFields() {
+        if (studentRadio.checked) {
+          studentFields.style.display = 'block';
+          professorFields.style.display = 'none';
+          userTypeInput.value = 'student';
+          
+          // Set required attributes for student fields
+          document.getElementById('studentId').required = true;
+          document.getElementById('course').required = true;
+          document.getElementById('yearLevel').required = true;
+          
+          // Remove required from professor fields
+          document.getElementById('professorId').required = false;
+          document.getElementById('department').required = false;
+        } else {
+          studentFields.style.display = 'none';
+          professorFields.style.display = 'block';
+          userTypeInput.value = 'professor';
+          
+          // Remove required from student fields
+          document.getElementById('studentId').required = false;
+          document.getElementById('course').required = false;
+          document.getElementById('yearLevel').required = false;
+          
+          // Set required attributes for professor fields
+          document.getElementById('professorId').required = true;
+          document.getElementById('department').required = true;
+        }
+      }
+
+      studentRadio.addEventListener('change', toggleFields);
+      professorRadio.addEventListener('change', toggleFields);
+      
+      // Initialize
+      toggleFields();
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Identity - LearnSync</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <h1>Verify Your Identity</h1>
+        
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash-message">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <p style="text-align: center; margin-bottom: 20px; color: #666;">
+            For security purposes, please verify your identity to reset your password.
+        </p>
+
+        <form method="POST" action="{{ url_for('verify_identity', token=token) }}">
+            <div class="input-group">
+                <div class="icon">👤</div>
+                <input type="text" name="first_name" placeholder="First Name" required>
+            </div>
+
+            <div class="input-group">
+                <div class="icon">👤</div>
+                <input type="text" name="last_name" placeholder="Last Name" required>
+            </div>
+
+            {% if user_type == 'student' %}
+            <div class="input-group">
+                <div class="icon">🎓</div>
+                <input type="text" name="student_id" placeholder="Student ID" required>
+            </div>
+            {% else %}
+            <div class="input-group">
+                <div class="icon">👨‍🏫</div>
+                <input type="text" name="professor_id" placeholder="Professor ID" required>
+            </div>
+            {% endif %}
+
+            <button type="submit" class="login-btn">Verify Identity</button>
+        </form>
+
+        <div class="options">
+            <a href="{{ url_for('login') }}">← Back to Login</a>
+        </div>
+    </div>
+</body>
+</html>
